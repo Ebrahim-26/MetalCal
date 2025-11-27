@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import CustomField from "./customField";
 import MetalSelectDropDown from "./MetalSelectDropDown";
-// import { metalName } from "@/functions/helpFunction";
 import { MetalEntry } from "@/Type/Type";
 import EntriesComponent from "./EntriesComponent";
 import { useApp } from "@/context/appContext";
@@ -10,7 +9,7 @@ function MetalEntryField() {
   const { entries, setEntries } = useApp();
   const emptyEntry = {
     id: Date.now(),
-    selectedMetal: 1,
+    selectedMetal: 0,
     weight: 0,
     smallBag: 0,
     jumboBag: 0,
@@ -18,10 +17,7 @@ function MetalEntryField() {
     otherMetalsWg: 0,
     totalWastage: 0,
   };
-
-  //   const [entries, setEntries] = useState<MetalEntry[]>([]);
   const [entry, setEntry] = useState<any>(emptyEntry);
-
   const addEntry = () => {
     setEntries((prev) => [...prev, entry]);
     setEntry({ ...emptyEntry, id: Date.now() });
@@ -106,8 +102,6 @@ function MetalEntryField() {
         />
         <button onClick={addEntry}>save</button>
       </div>
-
-      {/* display */}
       <div>
         {entries.map((item) => (
           <EntriesComponent

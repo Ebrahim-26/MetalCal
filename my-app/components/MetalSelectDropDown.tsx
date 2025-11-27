@@ -1,5 +1,6 @@
 import { metalList } from "@/data/metalList";
 import React from "react";
+import { useApp } from "@/context/appContext";
 
 function MetalSelectDropDown({
   selectedMetal,
@@ -8,6 +9,7 @@ function MetalSelectDropDown({
   selectedMetal: number;
   setSelectedMetal: (val: number) => void;
 }) {
+  const { dropDownMetalList } = useApp();
   return (
     <select
       style={{
@@ -18,7 +20,10 @@ function MetalSelectDropDown({
       value={selectedMetal}
       onChange={(e) => setSelectedMetal(Number(e.target.value))}
     >
-      {metalList.map((item) => (
+      <option key={0} value="none">
+        None
+      </option>
+      {dropDownMetalList.map((item) => (
         <option key={item.id} value={item.id}>
           {item.name}
         </option>

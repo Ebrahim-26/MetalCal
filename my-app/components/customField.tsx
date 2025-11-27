@@ -6,7 +6,7 @@ function CustomField({ setValue, value, label }: customFieldType) {
       <div className="border-r">
         <input
           type="number"
-          style={{ minWidth: 100 }}
+          style={{ width: 100 }}
           value={value}
           onChange={(e) => setValue(Number(e.target.value))}
           className="p-2 outline-none"
