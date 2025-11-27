@@ -24,3 +24,17 @@ export type metalDataType = {
   wastage: number;
   otherMetals?: [id: number, weight: number];
 };
+
+export type MetalEntry = {
+  id: number;
+  selectedMetal: number;
+  weight: number;
+  smallBag: number;
+  smallBagWg: number;
+  jumboBag: number;
+  jumboBagWg: number;
+  wastage: number;
+  otherMetalsWg: number;
+  totalWastage: number;
+  netWeight: number;
+};
