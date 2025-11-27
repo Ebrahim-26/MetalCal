@@ -2,6 +2,7 @@ export type metalListData = {
   id: number;
   name: string;
   code: string;
+  disabled: boolean;
 };
 
 export type customFieldType = {
@@ -29,12 +30,19 @@ export type MetalEntry = {
   id: number;
   selectedMetal: number;
   weight: number;
+  actualWeight: number;
   smallBag: number;
   smallBagWg: number;
   jumboBag: number;
   jumboBagWg: number;
   wastage: number;
-  otherMetalsWg: number;
   totalWastage: number;
-  netWeight: number;
+  metalWeight: number;
+  otherMetals: OtherMetals[];
+};
+
+export type OtherMetals = {
+  id: number;
+  selectedMetal: number;
+  weight: number;
 };

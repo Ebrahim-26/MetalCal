@@ -35,4 +35,4 @@ export const metalList = [
   { id: 34, name: "Small Battery", code: "SM" },
   { id: 35, name: "Coil / Motor (Copper Only)", code: "COI" },
   { id: 36, name: "CB2", code: "B2" },
-];
+].map((metal) => ({ ...metal, disabled: false }));

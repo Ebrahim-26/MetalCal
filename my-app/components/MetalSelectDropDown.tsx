@@ -1,5 +1,5 @@
 import { metalList } from "@/data/metalList";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useApp } from "@/context/appContext";
 
 function MetalSelectDropDown({
@@ -9,7 +9,34 @@ function MetalSelectDropDown({
   selectedMetal: number;
   setSelectedMetal: (val: number) => void;
 }) {
-  const { dropDownMetalList } = useApp();
+  const { dropDownMetalList, setDropDownMetalList } = useApp();
+  const [prevSelectedMetal, setPrevSelectedMetal] = useState<number | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (selectedMetal === 0) return;
+
+    setDropDownMetalList((prev) =>
+      prev.map((metal) => {
+        // Re-enable the previously selected option
+        if (metal.id === prevSelectedMetal) {
+          return { ...metal, disabled: false };
+        }
+
+        // Disable the currently selected option
+        if (metal.id === selectedMetal) {
+          return { ...metal, disabled: true };
+        }
+
+        return metal;
+      })
+    );
+
+    // Update the previous selected state
+    setPrevSelectedMetal(selectedMetal);
+  }, [selectedMetal]);
+
   return (
     <select
       style={{
@@ -24,7 +51,7 @@ function MetalSelectDropDown({
         None
       </option>
       {dropDownMetalList.map((item) => (
-        <option key={item.id} value={item.id}>
+        <option key={item.id} value={item.id} disabled={item.disabled}>
           {item.name}
         </option>
       ))}

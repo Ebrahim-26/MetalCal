@@ -11,8 +11,6 @@ import React, {
 } from "react";
 
 type AppContextType = {
-  username: string;
-  setUsername: (value: string) => void;
   entries: MetalEntry[];
   setEntries: React.Dispatch<React.SetStateAction<MetalEntry[]>>;
   dropDownMetalList: metalListData[];
@@ -22,7 +20,6 @@ type AppContextType = {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
-  const [username, setUsername] = useState("guest");
   const [entries, setEntries] = useState<MetalEntry[]>([]);
   const [dropDownMetalList, setDropDownMetalList] =
     useState<metalListData[]>(metalList);
@@ -35,8 +32,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   return (
     <AppContext.Provider
       value={{
-        username,
-        setUsername,
         entries,
         setEntries,
         dropDownMetalList,

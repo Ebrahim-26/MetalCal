@@ -11,7 +11,7 @@ function EntriesComponent({ item, removeEntry }: EntriesComponentProps) {
       <div className="bg-slate-300 p-4 rounded-lg flex gap-2 items-center m-2">
         <p className="text-md font-bold">{metalName(item?.selectedMetal)}</p>
         <p className="text-md font-bold bg-green-200 rounded-xl p-2">
-          Weight: {item.weight}
+          Weight: {item.actualWeight}
         </p>
         <div className="flex flex-col gap-2">
           <p className="text-md font-bold bg-amber-200 rounded-xl p-2">
@@ -32,15 +32,12 @@ function EntriesComponent({ item, removeEntry }: EntriesComponentProps) {
         <p className="text-md font-bold bg-red-200 rounded-xl p-2">
           Waste: {item.wastage}
         </p>
-        <p className="text-md font-bold bg-blue-200 rounded-xl p-2">
-          Other Metals: {item.otherMetalsWg}
-        </p>
         <div className="flex flex-col items-center border-2 p-4 border-red-400">
           <p className="text-xl font-bold">METAL WEIGHT</p>
-          <p className="text-xl font-bold text-red-500">{item.netWeight}</p>
+          <p className="text-xl font-bold text-red-500">{item.metalWeight}</p>
         </div>
       </div>
-      <button onClick={()=>removeEntry(item.id)} className="text-red-600">
+      <button onClick={() => removeEntry(item.id)} className="text-red-600">
         Delete
       </button>
     </div>
