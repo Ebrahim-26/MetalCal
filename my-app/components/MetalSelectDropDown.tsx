@@ -14,28 +14,28 @@ function MetalSelectDropDown({
     null
   );
 
-  useEffect(() => {
-    if (selectedMetal === 0) return;
+  // useEffect(() => {
+  //   if (selectedMetal === 0) return;
 
-    setDropDownMetalList((prev) =>
-      prev.map((metal) => {
-        // Re-enable the previously selected option
-        if (metal.id === prevSelectedMetal) {
-          return { ...metal, disabled: false };
-        }
+  //   setDropDownMetalList((prev) =>
+  //     prev.map((metal) => {
+  //       // Re-enable the previously selected option
+  //       if (metal.id === prevSelectedMetal) {
+  //         return { ...metal, disabled: false };
+  //       }
 
-        // Disable the currently selected option
-        if (metal.id === selectedMetal) {
-          return { ...metal, disabled: true };
-        }
+  //       // Disable the currently selected option
+  //       if (metal.id === selectedMetal) {
+  //         return { ...metal, disabled: true };
+  //       }
 
-        return metal;
-      })
-    );
+  //       return metal;
+  //     })
+  //   );
 
-    // Update the previous selected state
-    setPrevSelectedMetal(selectedMetal);
-  }, [selectedMetal]);
+  //   // Update the previous selected state
+  //   setPrevSelectedMetal(selectedMetal);
+  // }, [selectedMetal]);
 
   return (
     <select

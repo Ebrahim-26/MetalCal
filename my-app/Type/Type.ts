@@ -39,10 +39,16 @@ export type MetalEntry = {
   totalWastage: number;
   metalWeight: number;
   otherMetals: OtherMetals[];
+  otherMetalsWg: number;
 };
 
 export type OtherMetals = {
   id: number;
   selectedMetal: number;
   weight: number;
+};
+
+export type EntriesComponentProps = {
+  item: MetalEntry;
+  removeEntry: (id: number) => void;
 };

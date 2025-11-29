@@ -5,6 +5,8 @@ import MetalSelectDropDown from "./MetalSelectDropDown";
 import { MetalEntry, OtherMetals } from "@/Type/Type";
 import EntriesComponent from "./EntriesComponent";
 import { useApp } from "@/context/appContext";
+import Accordion from "./Accordion";
+import AccordionUsage from "./Accordion";
 function MetalEntryField() {
   const { entries, setEntries } = useApp();
   const emptyEntry = {
@@ -20,6 +22,7 @@ function MetalEntryField() {
     totalWastage: 0, // this includes SM, JB and wastage
     metalWeight: 0, // Weight of the metal after detucting totalWastage
     otherMetals: [],
+    otherMetalsWg: 0,
   };
   const [entry, setEntry] = useState<any>(emptyEntry); //individual entry
 
@@ -66,6 +69,7 @@ function MetalEntryField() {
       smallBagWg,
       jumboBagWg,
       metalWeight,
+      otherMetalsWg: otherMetalWeight,
     }));
   }, [
     entry.smallBag,
@@ -88,8 +92,18 @@ function MetalEntryField() {
 
   console.log("|| EntriesLIST", entries);
   console.log("Entry", entry);
+
+  const removeOtherMetals = (id: number) => {
+    const removedOtherMetals = entry.otherMetals.filter(
+      (r: OtherMetals) => r.id !== id
+    );
+    setEntry((prev: MetalEntry) => ({
+      ...prev,
+      otherMetals: removedOtherMetals,
+    }));
+  };
   return (
-    <>
+    <div>
       <div className="flex gap-2">
         <MetalSelectDropDown
           selectedMetal={entry.selectedMetal}
@@ -127,52 +141,70 @@ function MetalEntryField() {
         />
         <button onClick={addEntry}>save</button>
       </div>
-      {entry.otherMetals.map((om: OtherMetals) => (
-        <div key={om.id} className="flex gap-5 items-center">
-          <p>{om.id}</p>
+      <div className="flex gap-5 ">
+        <button
+          onClick={addOtherMetal}
+          className="bg-violet-300 hover:bg-violet-400 p-5 h-5 flex items-center my-5 rounded-2xl"
+        >
+          Add other metal
+        </button>
+        <div>
+          {entry.otherMetals.map((om: OtherMetals) => (
+            <div key={om.id} className="flex gap-5 items-center m-5">
+              <CustomField
+                label="Metal WG"
+                value={om.weight}
+                setValue={(val) =>
+                  setEntry((prev: MetalEntry) => ({
+                    ...prev,
+                    otherMetals: prev.otherMetals.map((m) =>
+                      m.id === om.id ? { ...m, weight: val } : m
+                    ),
+                  }))
+                }
+              />
 
-          <CustomField
-            label="Metal WG"
-            value={om.weight}
-            setValue={(val) =>
-              setEntry((prev: MetalEntry) => ({
-                ...prev,
-                otherMetals: prev.otherMetals.map((m) =>
-                  m.id === om.id ? { ...m, weight: val } : m
-                ),
-              }))
-            }
-          />
-
-          <MetalSelectDropDown
-            selectedMetal={om.selectedMetal}
-            setSelectedMetal={(val) =>
-              setEntry((prev: MetalEntry) => ({
-                ...prev,
-                otherMetals: prev.otherMetals.map((m) =>
-                  m.id === om.id ? { ...m, selectedMetal: val } : m
-                ),
-              }))
-            }
-          />
+              <MetalSelectDropDown
+                selectedMetal={om.selectedMetal}
+                setSelectedMetal={(val) =>
+                  setEntry((prev: MetalEntry) => ({
+                    ...prev,
+                    otherMetals: prev.otherMetals.map((m) =>
+                      m.id === om.id ? { ...m, selectedMetal: val } : m
+                    ),
+                  }))
+                }
+              />
+              <button
+                className="text-red-600 font-bold"
+                onClick={() => removeOtherMetals(om.id)}
+              >
+                X
+              </button>
+            </div>
+          ))}
         </div>
+      </div>
+
+      {entries.map((item) => (
+        <AccordionUsage item={item} key={item.id} removeEntry={removeEntry} />
       ))}
 
-      <button onClick={addOtherMetal}>Add other metal</button>
-      <div>
-        {entries.map((item) => (
-          <EntriesComponent
-            item={item}
-            key={item.id}
-            removeEntry={removeEntry}
-          />
-        ))}
-        <p>Grand WG: {grandWeight}</p>
-        <p>Grand Wastage: {grandWastage}</p>
-        <p>Net Metal: {netMetal}</p>
-        <p>Balance: {grandWeight - grandWastage - netMetal}</p>
+      <div className="flex gap-5 justify-center m-5">
+        <p className="bg-slate-400 p-3 rounded-2xl font-bold">
+          Grand WG: {grandWeight}
+        </p>
+        <p className="bg-slate-400 p-3 rounded-2xl font-bold">
+          Grand Wastage: {grandWastage}
+        </p>
+        <p className="bg-slate-400 p-3 rounded-2xl font-bold">
+          Net Metal: {netMetal}
+        </p>
+        <p className="bg-slate-400 p-3 rounded-2xl font-bold">
+          Balance: {grandWeight - grandWastage - netMetal}
+        </p>
       </div>
-    </>
+    </div>
   );
 }
 
