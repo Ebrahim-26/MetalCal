@@ -7,6 +7,7 @@ import EntriesComponent from "./EntriesComponent";
 import { useApp } from "@/context/appContext";
 import Accordion from "./Accordion";
 import AccordionUsage from "./Accordion";
+import SummaryField from "./SummaryField";
 function MetalEntryField() {
   const { entries, setEntries } = useApp();
   const emptyEntry = {
@@ -27,10 +28,33 @@ function MetalEntryField() {
   const [entry, setEntry] = useState<any>(emptyEntry); //individual entry
 
   const addEntry = () => {
-    if (entry.selectedMetal != 0) {
-      setEntries((prev) => [...prev, entry]);
-      setEntry({ ...emptyEntry, id: Date.now() });
-    }
+    if (entry.selectedMetal === 0) return;
+
+    const timestamp = Date.now();
+    const mainEntry: MetalEntry = { ...entry, id: timestamp };
+
+    const otherMetalEntries: MetalEntry[] = entry.otherMetals
+      .filter(
+        (metal: OtherMetals) => metal.selectedMetal !== 0 && metal.weight > 0
+      )
+      .map((metal: OtherMetals, index: number) => ({
+        id: timestamp + index + 1,
+        selectedMetal: metal.selectedMetal,
+        weight: metal.weight,
+        actualWeight: metal.weight,
+        smallBag: 0,
+        smallBagWg: 0,
+        jumboBag: 0,
+        jumboBagWg: 0,
+        wastage: 0,
+        totalWastage: 0,
+        metalWeight: metal.weight,
+        otherMetals: [],
+        otherMetalsWg: 0,
+      }));
+
+    setEntries((prev) => [...prev, mainEntry, ...otherMetalEntries]);
+    setEntry({ ...emptyEntry, id: Date.now() });
   };
 
   const removeEntry = (id: number) => {
@@ -81,14 +105,17 @@ function MetalEntryField() {
   ]);
 
   const grandWeight = entries.reduce(
-    (total, item) => total + item.actualWeight,
+    (total, item) => total + (item.actualWeight || 0),
     0
   );
   const grandWastage = entries.reduce(
-    (total, item) => total + item.totalWastage,
+    (total, item) => total + (item.totalWastage || 0),
     0
   );
-  const netMetal = entries.reduce((total, item) => total + item.metalWeight, 0);
+  const netMetal = entries.reduce(
+    (total, item) => total + (item.metalWeight || 0),
+    0
+  );
 
   console.log("|| EntriesLIST", entries);
   console.log("Entry", entry);
@@ -102,108 +129,135 @@ function MetalEntryField() {
       otherMetals: removedOtherMetals,
     }));
   };
+
   return (
-    <div>
-      <div className="flex gap-2">
-        <MetalSelectDropDown
-          selectedMetal={entry.selectedMetal}
-          setSelectedMetal={(val: number) =>
-            setEntry((prev: any) => ({ ...prev, selectedMetal: val }))
-          }
-        />
-        <CustomField
-          label="WG"
-          value={entry.weight}
-          setValue={(val) =>
-            setEntry((prev: any) => ({ ...prev, weight: val }))
-          }
-        />
-        <CustomField
-          label="SB"
-          value={entry.smallBag}
-          setValue={(val) =>
-            setEntry((prev: any) => ({ ...prev, smallBag: val }))
-          }
-        />
-        <CustomField
-          label="JB"
-          value={entry.jumboBag}
-          setValue={(val) =>
-            setEntry((prev: any) => ({ ...prev, jumboBag: val }))
-          }
-        />
-        <CustomField
-          label="waste"
-          value={entry.wastage}
-          setValue={(val) =>
-            setEntry((prev: any) => ({ ...prev, wastage: val }))
-          }
-        />
-        <button onClick={addEntry}>save</button>
-      </div>
-      <div className="flex gap-5 ">
-        <button
-          onClick={addOtherMetal}
-          className="bg-violet-300 hover:bg-violet-400 p-5 h-5 flex items-center my-5 rounded-2xl"
-        >
-          Add other metal
-        </button>
-        <div>
-          {entry.otherMetals.map((om: OtherMetals) => (
-            <div key={om.id} className="flex gap-5 items-center m-5">
-              <CustomField
-                label="Metal WG"
-                value={om.weight}
-                setValue={(val) =>
-                  setEntry((prev: MetalEntry) => ({
-                    ...prev,
-                    otherMetals: prev.otherMetals.map((m) =>
-                      m.id === om.id ? { ...m, weight: val } : m
-                    ),
-                  }))
-                }
-              />
+    <div className="w-full flex flex-col items-center gap-5">
+      <div className="bg-gray-200 rounded-2xl flex flex-col p-5 w-[60%] border-l-4 border-blue-950">
+        <div className="grid grid-cols-2 gap-2">
+          <div className="h-full flex flex-col gap-2">
+            <p className="font-bold">Select Metal</p>
+            <MetalSelectDropDown
+              selectedMetal={entry.selectedMetal}
+              setSelectedMetal={(val: number) =>
+                setEntry((prev: any) => ({ ...prev, selectedMetal: val }))
+              }
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="font-bold">Enter Metal Weight</p>
+            <CustomField
+              label="WG"
+              value={entry.weight}
+              setValue={(val) =>
+                setEntry((prev: any) => ({ ...prev, weight: val }))
+              }
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="font-bold">Enter Small Bag Quantity</p>
 
-              <MetalSelectDropDown
-                selectedMetal={om.selectedMetal}
-                setSelectedMetal={(val) =>
-                  setEntry((prev: MetalEntry) => ({
-                    ...prev,
-                    otherMetals: prev.otherMetals.map((m) =>
-                      m.id === om.id ? { ...m, selectedMetal: val } : m
-                    ),
-                  }))
-                }
-              />
-              <button
-                className="text-red-600 font-bold"
-                onClick={() => removeOtherMetals(om.id)}
-              >
-                X
-              </button>
-            </div>
-          ))}
+            <CustomField
+              label="SB"
+              value={entry.smallBag}
+              setValue={(val) =>
+                setEntry((prev: any) => ({ ...prev, smallBag: val }))
+              }
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="font-bold">Enter Jumbo Bag Quantity</p>
+
+            <CustomField
+              label="JB"
+              value={entry.jumboBag}
+              setValue={(val) =>
+                setEntry((prev: any) => ({ ...prev, jumboBag: val }))
+              }
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="font-bold">Enter Waste in KGs</p>
+
+            <CustomField
+              label="waste"
+              value={entry.wastage}
+              setValue={(val) =>
+                setEntry((prev: any) => ({ ...prev, wastage: val }))
+              }
+            />
+          </div>
         </div>
+        <div className="flex gap-5 ">
+          <button
+            onClick={addOtherMetal}
+            className="bg-white font-bold cursor-pointer hover:bg-blue-400 p-5 h-5 flex items-center my-5 rounded-md text-nowrap"
+          >
+            + Other Metal
+          </button>
+          <div className="w-full flex flex-col items-center">
+            {entry.otherMetals.map((om: OtherMetals) => (
+              <div key={om.id} className="flex gap-5 items-center m-5">
+                <CustomField
+                  label="Metal WG"
+                  value={om.weight}
+                  setValue={(val) =>
+                    setEntry((prev: MetalEntry) => ({
+                      ...prev,
+                      otherMetals: prev.otherMetals.map((m) =>
+                        m.id === om.id ? { ...m, weight: val } : m
+                      ),
+                    }))
+                  }
+                />
+
+                <MetalSelectDropDown
+                  selectedMetal={om.selectedMetal}
+                  setSelectedMetal={(val) =>
+                    setEntry((prev: MetalEntry) => ({
+                      ...prev,
+                      otherMetals: prev.otherMetals.map((m) =>
+                        m.id === om.id ? { ...m, selectedMetal: val } : m
+                      ),
+                    }))
+                  }
+                />
+                <button
+                  className="text-red-600 font-bold bg-red-300 hover:bg-red-200 rounded-full p-2 cursor-pointer"
+                  onClick={() => removeOtherMetals(om.id)}
+                >
+                  X
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+        <button
+          onClick={addEntry}
+          className="cursor-pointer bg-white p-2 rounded-md font-bold"
+        >
+          save
+        </button>
+      </div>
+      <div className="w-[60%]">
+        {entries.map((item) => (
+          <AccordionUsage item={item} key={item.id} removeEntry={removeEntry} />
+        ))}
       </div>
 
-      {entries.map((item) => (
-        <AccordionUsage item={item} key={item.id} removeEntry={removeEntry} />
-      ))}
-
-      <div className="flex gap-5 justify-center m-5">
-        <p className="bg-slate-400 p-3 rounded-2xl font-bold">
-          Grand WG: {grandWeight}
-        </p>
-        <p className="bg-slate-400 p-3 rounded-2xl font-bold">
-          Grand Wastage: {grandWastage}
-        </p>
-        <p className="bg-slate-400 p-3 rounded-2xl font-bold">
-          Net Metal: {netMetal}
-        </p>
-        <p className="bg-slate-400 p-3 rounded-2xl font-bold">
-          Balance: {grandWeight - grandWastage - netMetal}
-        </p>
-      </div>
+      <SummaryField
+        grandWastage={grandWastage}
+        grandWeight={grandWeight}
+        netMetal={netMetal}
+      />
+      <button
+        className="bg-red-400 hover:bg-red-500 text-white p-3 rounded-2xl font-bold"
+        onClick={() => {
+          setEntries([]);
+          setEntry({ ...emptyEntry, id: Date.now() });
+        }}
+      >
+        CLEAR
+      </button>
     </div>
   );
 }

@@ -9,10 +9,8 @@ function MetalSelectDropDown({
   selectedMetal: number;
   setSelectedMetal: (val: number) => void;
 }) {
-  const { dropDownMetalList, setDropDownMetalList } = useApp();
-  const [prevSelectedMetal, setPrevSelectedMetal] = useState<number | null>(
-    null
-  );
+  const { dropDownMetalList} = useApp();
+
 
   // useEffect(() => {
   //   if (selectedMetal === 0) return;
@@ -40,9 +38,10 @@ function MetalSelectDropDown({
   return (
     <select
       style={{
-        border: "1px solid",
+        border: "2px solid",
         padding: 2,
         borderRadius: 5,
+        height:45
       }}
       value={selectedMetal}
       onChange={(e) => setSelectedMetal(Number(e.target.value))}
