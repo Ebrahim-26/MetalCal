@@ -32,8 +32,11 @@ export default function AccordionUsage({
               </div>
               <div>
                 <p>{item.actualWeight}</p>
-                <p>{item.totalWastage}</p>
-                <p>{item.metalWeight}</p>
+                <p className="text-red-500 text-end">
+                  {item.totalWastage > 0 && <>- </>}
+                  {item.totalWastage}
+                </p>
+                <p className="text-green-500">{item.metalWeight}</p>
               </div>
             </div>
           </div>
@@ -44,22 +47,27 @@ export default function AccordionUsage({
             <p>
               Small Bag:{" "}
               <span className="font-bold">
-                {item.smallBag} Quant | {item.smallBagWg} KG
+                {item.smallBag} Quant |{" "}
+                <span className="text-red-500">{item.smallBagWg} KG</span>
               </span>
             </p>
             <p>
               Jumbo Bag:{" "}
               <span className="font-bold">
-                {item.jumboBag} Quant | {item.jumboBagWg} KG
+                {item.jumboBag} Quant |{" "}
+                <span className="text-red-500">{item.jumboBagWg} KG</span>
               </span>
             </p>
             <p>
-              Waste: <span className="font-bold">{item.wastage}</span>
+              Waste:{" "}
+              <span className="font-bold text-red-500">{item.wastage} KG</span>
             </p>
             {/* <p>Total Wastage: {item.totalWastage}</p> */}
             <p>
               Other Metal:{" "}
-              <span className="font-bold">{item.otherMetalsWg}</span>
+              <span className="font-bold text-red-500">
+                {item.otherMetalsWg} KG
+              </span>
             </p>
           </div>
         </AccordionDetails>
