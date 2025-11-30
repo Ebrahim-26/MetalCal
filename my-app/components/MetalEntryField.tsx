@@ -53,7 +53,8 @@ function MetalEntryField() {
         otherMetalsWg: 0,
       }));
 
-    setEntries((prev) => [...prev, mainEntry, ...otherMetalEntries]);
+    // setEntries((prev) => [...prev, mainEntry, ...otherMetalEntries]);
+    setEntries((prev) => [...prev, mainEntry]);
     setEntry({ ...emptyEntry, id: Date.now() });
   };
 
@@ -132,7 +133,7 @@ function MetalEntryField() {
 
   return (
     <div className="w-full flex flex-col items-center gap-5">
-      <div className="bg-gray-200 rounded-2xl flex flex-col p-5 w-[60%] border-l-4 border-blue-950">
+      <div className="bg-gray-200 rounded-2xl flex flex-col p-5 w-[60%] border-l-4 border-blue-950 shadow-lg">
         <div className="grid grid-cols-2 gap-2">
           <div className="h-full flex flex-col gap-2">
             <p className="font-bold">Select Metal</p>
@@ -190,7 +191,7 @@ function MetalEntryField() {
         <div className="flex gap-5 ">
           <button
             onClick={addOtherMetal}
-            className="bg-white font-bold cursor-pointer hover:bg-blue-400 p-5 h-5 flex items-center my-5 rounded-md text-nowrap"
+            className="bg-white font-bold cursor-pointer hover:bg-zinc-400 p-5 h-5 flex items-center my-5 rounded-md text-nowrap"
           >
             + Other Metal
           </button>
@@ -222,7 +223,7 @@ function MetalEntryField() {
                   }
                 />
                 <button
-                  className="text-red-600 font-bold bg-red-300 hover:bg-red-200 rounded-full p-2 cursor-pointer"
+                  className="text-red-600 font-bold bg-red-300 hover:bg-red-200 rounded-full px-3 py-1 cursor-pointer"
                   onClick={() => removeOtherMetals(om.id)}
                 >
                   X

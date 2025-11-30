@@ -13,8 +13,8 @@ export default function AccordionUsage({
   removeEntry,
 }: EntriesComponentProps) {
   return (
-    <div className="mt-2">
-      <Accordion>
+    <div className="mt-2 ">
+      <Accordion style={{ borderRadius: "16px" }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1-content"
