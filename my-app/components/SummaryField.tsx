@@ -17,11 +17,11 @@ function SummaryField({ grandWastage, grandWeight, netMetal }: summaryType) {
   const safeGrandWeight = grandWeight || 0;
   const safeGrandWastage = grandWastage || 0;
   const safeNetMetal = netMetal || 0;
-  const balance = safeGrandWeight - safeGrandWastage - safeNetMetal;
+  //   const balance = safeGrandWeight - safeGrandWastage - safeNetMetal;
 
   return (
     <div className="h-full  flex flex-col items-center w-[60%]">
-      <p className="font-bold m-2 text-black ">SUMMARY</p>
+      {/* <p className="font-bold m-2 text-black ">SUMMARY</p> */}
       <div className="bg-blue-950 rounded-2xl w-full shadow-2xl ">
         <div className="flex gap-5 justify-evenly m-5">
           <div className="w-full">

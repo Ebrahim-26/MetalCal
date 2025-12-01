@@ -3,13 +3,12 @@ import { useEffect, useState } from "react";
 import CustomField from "./customField";
 import MetalSelectDropDown from "./MetalSelectDropDown";
 import { MetalEntry, OtherMetals } from "@/Type/Type";
-import EntriesComponent from "./EntriesComponent";
 import { useApp } from "@/context/appContext";
-import Accordion from "./Accordion";
 import AccordionUsage from "./Accordion";
 import SummaryField from "./SummaryField";
 function MetalEntryField() {
   const { entries, setEntries } = useApp();
+  const [errorMessage, setErrorMessage] = useState("");
   const emptyEntry = {
     id: Date.now(),
     selectedMetal: 0, //selected from DD
@@ -28,8 +27,19 @@ function MetalEntryField() {
   const [entry, setEntry] = useState<any>(emptyEntry); //individual entry
 
   const addEntry = () => {
-    if (entry.selectedMetal === 0) return;
-
+    if (entry.selectedMetal === 0) {
+      setErrorMessage("Kindly Select the Metal");
+      return;
+    }
+    if (entry.weight === 0) {
+      setErrorMessage("Weight Can't be zero");
+      return;
+    }
+    if (entry.weight <= entry.otherMetalsWg) {
+      setErrorMessage("Other metals weight can't be more than entered weight");
+      return;
+    }
+    setErrorMessage("");
     const timestamp = Date.now();
     const mainEntry: MetalEntry = { ...entry, id: timestamp };
 
@@ -63,6 +73,10 @@ function MetalEntryField() {
   };
 
   const addOtherMetal = () => {
+    if (entry.weight === 0) {
+      setErrorMessage("Add Metal Weight before adding other metals");
+      return;
+    }
     setEntry((prev: MetalEntry) => ({
       ...prev,
       otherMetals: [
@@ -238,6 +252,7 @@ function MetalEntryField() {
         >
           save
         </button>
+        <p className="text-sm text-red-500 mt-2 text-center">{errorMessage}</p>
       </div>
       <div className="w-[60%]">
         {entries.map((item) => (
@@ -250,9 +265,11 @@ function MetalEntryField() {
         grandWeight={grandWeight}
         netMetal={netMetal}
       />
+
       <button
-        className="bg-red-400 hover:bg-red-500 text-white p-3 rounded-2xl font-bold"
+        className="bg-red-400 hover:bg-red-500 text-white p-3 rounded-2xl font-bold w-[60%] mb-5"
         onClick={() => {
+          setErrorMessage("");
           setEntries([]);
           setEntry({ ...emptyEntry, id: Date.now() });
         }}

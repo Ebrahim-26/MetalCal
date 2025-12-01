@@ -35,4 +35,8 @@ export const metalList = [
   { id: 34, name: "Small Battery", code: "SM" },
   { id: 35, name: "Coil / Motor (Copper Only)", code: "COI" },
   { id: 36, name: "CB2", code: "B2" },
+  { id: 37, name: "Maza Aluminium", code: "MZ" },
+  { id: 38, name: "Sari", code: "SC" },
+  { id: 39, name: "Computer Battery", code: "CB" },
+  { id: 40, name: "Burn Wire", code: "BW" },
 ].map((metal) => ({ ...metal, disabled: false }));
