@@ -21,14 +21,30 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [entries, setEntries] = useState<MetalEntry[]>([]);
-  const [dropDownMetalList, setDropDownMetalList] =
-    useState<metalListData[]>(metalList);
+  const [dropDownMetalList, setDropDownMetalList] = useState<metalListData[]>(
+    []
+  );
+
+
+  // const [dropDownMetalList, setDropDownMetalList] =
+  //   useState<metalListData[]>(metalList);
+
+  
+  // useEffect(() => {
+  //   const usedMetalIds = entries.map((entry) => entry.selectedMetal);
+  //   setDropDownMetalList(
+  //     metalList.filter((metal) => !usedMetalIds.includes(metal.id))
+  //   );
+  // }, [entries]);
+
   useEffect(() => {
-    const usedMetalIds = entries.map((entry) => entry.selectedMetal);
-    setDropDownMetalList(
-      metalList.filter((metal) => !usedMetalIds.includes(metal.id))
-    );
-  }, [entries]);
+    fetch("http://localhost:8000/api/metalList")
+      .then((res) => res.json())
+      .then((data) => setDropDownMetalList(data))
+      .catch((error) => console.log(error));
+  }, []);
+
+  console.log("Metal List from API:", dropDownMetalList);
   return (
     <AppContext.Provider
       value={{

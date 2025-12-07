@@ -132,8 +132,8 @@ function MetalEntryField() {
     0
   );
 
-  console.log("|| EntriesLIST", entries);
-  console.log("Entry", entry);
+  // console.log("Entry List:", entries);
+  // console.log("Single Entry:", entry);
 
   const removeOtherMetals = (id: number) => {
     const removedOtherMetals = entry.otherMetals.filter(
