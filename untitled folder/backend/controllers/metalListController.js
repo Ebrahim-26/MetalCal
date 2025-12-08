@@ -1,5 +1,6 @@
 import { metalList } from "../data/metalList.js";
-import { PrismaClient } from "../generated/prisma/client/index.js"; // adjust path as needed
+import pkg from "@prisma/client";
+const { PrismaClient } = pkg;
 const prisma = new PrismaClient();
 
 const getAllMetalList = (req, res) => {
