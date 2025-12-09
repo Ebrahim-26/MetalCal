@@ -7,26 +7,28 @@ import { useApp } from "@/context/appContext";
 import AccordionUsage from "./Accordion";
 import SummaryField from "./SummaryField";
 function MetalEntryField() {
-  const { entries, setEntries } = useApp();
+  const { entries, setEntries, setRefresh } = useApp();
   const [errorMessage, setErrorMessage] = useState("");
   const emptyEntry = {
     id: Date.now(),
     selectedMetal: 0, //selected from DD
     weight: 0, //entered metal Weight
-    actualWeight: 0, //weight after reduing other metal weight
+    // actualWeight: 0, //weight after reduing other metal weight
     smallBag: 0,
     jumboBag: 0,
     wastage: 0,
-    smallBagWg: 0, // smallBag/5
-    jumboBagWg: 0, // JB*3
-    totalWastage: 0, // this includes SM, JB and wastage
-    metalWeight: 0, // Weight of the metal after detucting totalWastage
+    // smallBagWg: 0, // smallBag/5
+    // jumboBagWg: 0, // JB*3
+    // totalWastage: 0, // this includes SM, JB and wastage
+    // metalWeight: 0, // Weight of the metal after detucting totalWastage
     otherMetals: [],
-    otherMetalsWg: 0,
+    // otherMetalsWg: 0,
   };
   const [entry, setEntry] = useState<any>(emptyEntry); //individual entry
-
-  const addEntry = () => {
+  const toggleRefresh = () => {
+    setRefresh((prev) => !prev);
+  };
+  const addEntry = async () => {
     if (entry.selectedMetal === 0) {
       setErrorMessage("Kindly Select the Metal");
       return;
@@ -43,33 +45,65 @@ function MetalEntryField() {
     const timestamp = Date.now();
     const mainEntry: MetalEntry = { ...entry, id: timestamp };
 
-    const otherMetalEntries: MetalEntry[] = entry.otherMetals
-      .filter(
-        (metal: OtherMetals) => metal.selectedMetal !== 0 && metal.weight > 0
-      )
-      .map((metal: OtherMetals, index: number) => ({
-        id: timestamp + index + 1,
-        selectedMetal: metal.selectedMetal,
-        weight: metal.weight,
-        actualWeight: metal.weight,
-        smallBag: 0,
-        smallBagWg: 0,
-        jumboBag: 0,
-        jumboBagWg: 0,
-        wastage: 0,
-        totalWastage: 0,
-        metalWeight: metal.weight,
-        otherMetals: [],
-        otherMetalsWg: 0,
-      }));
+    // const otherMetalEntries: MetalEntry[] = entry.otherMetals
+    //   .filter(
+    //     (metal: OtherMetals) => metal.selectedMetal !== 0 && metal.weight > 0
+    //   )
+    //   .map((metal: OtherMetals, index: number) => ({
+    //     id: timestamp + index + 1,
+    //     selectedMetal: metal.selectedMetal,
+    //     weight: metal.weight,
+    //     actualWeight: metal.weight,
+    //     smallBag: 0,
+    //     smallBagWg: 0,
+    //     jumboBag: 0,
+    //     jumboBagWg: 0,
+    //     wastage: 0,
+    //     totalWastage: 0,
+    //     metalWeight: metal.weight,
+    //     otherMetals: [],
+    //     otherMetalsWg: 0,
+    //   }));
+
+    try {
+      const res = await fetch("http://localhost:8000/api/entryList", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(mainEntry),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Failed to create entry");
+      }
+
+      const data = await res.json();
+      toggleRefresh();
+      console.log("Created entry:", data);
+    } catch (err) {
+      console.error(err.message);
+    }
 
     // setEntries((prev) => [...prev, mainEntry, ...otherMetalEntries]);
     setEntries((prev) => [...prev, mainEntry]);
     setEntry({ ...emptyEntry, id: Date.now() });
   };
 
-  const removeEntry = (id: number) => {
-    setEntries((prev) => prev.filter((r) => r.id != id));
+  const removeEntry = async (id: number) => {
+    try {
+      const res = await fetch(`http://localhost:8000/api/entryList/${id}`, {
+        method: "DELETE",
+      });
+      toggleRefresh();
+      if (!res) {
+        throw new Error("Delete Failed");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    // setEntries((prev) => prev.filter((r) => r.id != id));
   };
 
   const addOtherMetal = () => {
@@ -91,33 +125,33 @@ function MetalEntryField() {
   };
 
   //calculates SM,JB,waste and net weigth and adds tot
-  useEffect(() => {
-    const smallBagWg = Math.floor(entry.smallBag / 5);
-    const jumboBagWg = entry.jumboBag * 3;
-    const otherMetalWeight = entry.otherMetals.reduce(
-      (total: number, item: OtherMetals) => total + item.weight,
-      0
-    );
-    const waste = smallBagWg + jumboBagWg + entry.wastage;
-    const metalWeight = entry.weight - waste - otherMetalWeight;
-    const actualWeight = entry.weight - otherMetalWeight;
-    setEntry((prev: MetalEntry) => ({
-      ...prev,
-      totalWastage: waste,
-      actualWeight,
-      smallBagWg,
-      jumboBagWg,
-      metalWeight,
-      otherMetalsWg: otherMetalWeight,
-    }));
-  }, [
-    entry.smallBag,
-    entry.jumboBag,
-    entry.wastage,
-    entry.otherMetalsWg,
-    entry.weight,
-    entry.otherMetals,
-  ]);
+  // useEffect(() => {
+  //   const smallBagWg = Math.floor(entry.smallBag / 5);
+  //   const jumboBagWg = entry.jumboBag * 3;
+  //   const otherMetalWeight = entry.otherMetals.reduce(
+  //     (total: number, item: OtherMetals) => total + item.weight,
+  //     0
+  //   );
+  //   const waste = smallBagWg + jumboBagWg + entry.wastage;
+  //   const metalWeight = entry.weight - waste - otherMetalWeight;
+  //   const actualWeight = entry.weight - otherMetalWeight;
+  //   setEntry((prev: MetalEntry) => ({
+  //     ...prev,
+  //     totalWastage: waste,
+  //     actualWeight,
+  //     smallBagWg,
+  //     jumboBagWg,
+  //     metalWeight,
+  //     otherMetalsWg: otherMetalWeight,
+  //   }));
+  // }, [
+  //   entry.smallBag,
+  //   entry.jumboBag,
+  //   entry.wastage,
+  //   entry.otherMetalsWg,
+  //   entry.weight,
+  //   entry.otherMetals,
+  // ]);
 
   const grandWeight = entries.reduce(
     (total, item) => total + (item.actualWeight || 0),
@@ -133,7 +167,7 @@ function MetalEntryField() {
   );
 
   // console.log("Entry List:", entries);
-  // console.log("Single Entry:", entry);
+  console.log("Single Entry:", entry);
 
   const removeOtherMetals = (id: number) => {
     const removedOtherMetals = entry.otherMetals.filter(
@@ -145,6 +179,19 @@ function MetalEntryField() {
     }));
   };
 
+  const deleteAllEntry = async () => {
+    try {
+      const res = await fetch("http://localhost:8000/api/entryList", {
+        method: "DELETE",
+      });
+      if (!res) {
+        throw new Error("Deletion Failed");
+      }
+      toggleRefresh();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="w-full flex flex-col items-center gap-5">
       <div className="bg-gray-200 rounded-2xl flex flex-col p-5 w-[60%] border-l-4 border-blue-950 shadow-lg">
@@ -270,7 +317,7 @@ function MetalEntryField() {
         className="bg-red-400 hover:bg-red-500 text-white p-3 rounded-2xl font-bold w-[60%] mb-5"
         onClick={() => {
           setErrorMessage("");
-          setEntries([]);
+          deleteAllEntry();
           setEntry({ ...emptyEntry, id: Date.now() });
         }}
       >

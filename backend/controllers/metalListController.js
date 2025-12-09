@@ -1,4 +1,4 @@
-import { metalList } from "../data/metalList.js";
+import { metalList } from "../data/data.js";
 
 const getAllMetalList = (req, res) => {
   return res.status(200).json(metalList);

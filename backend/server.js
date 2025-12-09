@@ -1,5 +1,6 @@
 import express from "express";
 import metalListRoutes from "./routes/metalListRoute.js";
+import entryListRoutes from "./routes/entryListRoute.js";
 import cors from "cors";
 
 const app = express();
@@ -15,5 +16,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/metalList", metalListRoutes);
+
+app.use("/api/entryList", entryListRoutes);
 
 app.listen(port, () => console.log(`Server is running on port ${port}.`));

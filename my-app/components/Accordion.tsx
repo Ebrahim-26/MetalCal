@@ -72,7 +72,7 @@ export default function AccordionUsage({
           </div>
         </AccordionDetails>
         <AccordionActions>
-          <Button>Edit</Button>
+          {/* <Button>Edit</Button> */}
           <Button onClick={() => removeEntry(item.id)}>Delete</Button>
         </AccordionActions>
       </Accordion>

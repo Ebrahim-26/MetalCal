@@ -15,6 +15,8 @@ type AppContextType = {
   setEntries: React.Dispatch<React.SetStateAction<MetalEntry[]>>;
   dropDownMetalList: metalListData[];
   setDropDownMetalList: React.Dispatch<React.SetStateAction<metalListData[]>>;
+  refresh: boolean;
+  setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -24,12 +26,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [dropDownMetalList, setDropDownMetalList] = useState<metalListData[]>(
     []
   );
-
-
+  const [refresh, setRefresh] = useState<boolean>(false);
   // const [dropDownMetalList, setDropDownMetalList] =
   //   useState<metalListData[]>(metalList);
 
-  
   // useEffect(() => {
   //   const usedMetalIds = entries.map((entry) => entry.selectedMetal);
   //   setDropDownMetalList(
@@ -44,12 +44,19 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       .catch((error) => console.log(error));
   }, []);
 
-  console.log("Metal List from API:", dropDownMetalList);
+  useEffect(() => {
+    fetch("http://localhost:8000/api/entryList/")
+      .then((res) => res.json())
+      .then((data) => setEntries(data));
+  }, [refresh]);
+  // console.log("Metal List from API:", dropDownMetalList);
   return (
     <AppContext.Provider
       value={{
         entries,
         setEntries,
+        refresh,
+        setRefresh,
         dropDownMetalList,
         setDropDownMetalList,
       }}

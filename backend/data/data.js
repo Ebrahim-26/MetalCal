@@ -40,3 +40,48 @@ export let metalList = [
   { id: 39, name: "Computer Battery", code: "CB" },
   { id: 40, name: "Burn Wire", code: "BW" },
 ].map((metal) => ({ ...metal, disabled: false }));
+
+export let entryList = [
+  {
+    id: 1,
+    actualWeight: 10,
+    jumboBag: 0,
+    jumboBagWg: 0,
+    smallBag: 0,
+    smallBagWg: 0,
+    metalWeight: 1,
+    selectedMetal: 3,
+    weight: 2,
+    otherMetals: [
+      {
+        id: 1765159217501,
+        selectedMetal: 2,
+        weight: 1,
+      },
+    ],
+    otherMetalsWg: 1,
+    wastage: 0,
+    totalWastage: 0,
+  },
+  {
+    id: 2,
+    actualWeight: 10,
+    jumboBag: 0,
+    jumboBagWg: 0,
+    smallBag: 0,
+    smallBagWg: 0,
+    metalWeight: 1,
+    selectedMetal: 31,
+    weight: 2,
+    otherMetals: [
+      {
+        id: 1765159217501,
+        selectedMetal: 2,
+        weight: 1,
+      },
+    ],
+    otherMetalsWg: 1,
+    wastage: 0,
+    totalWastage: 0,
+  },
+];
